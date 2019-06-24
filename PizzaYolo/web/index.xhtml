@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+        <h:outputStylesheet library = "css" name = "styles.css" /> 
+
+    </h:head>
+
+    <h:body>
+         <div id="infocompte">
+             <h:outputText style="display:block ; margin-top: 13px; margin-top: 5px; margin-left: 5px; z-index: 2;" value="#{PizzaView.user.nom_user} | #{PizzaView.user.getSolde()} €" rendered="#{PizzaView.user != null}" > </h:outputText>
+        </div>
+        
+        <div id="Menu">
+            <h:form> 
+                <h1 id="titre"> Rapizz</h1>
+                <img id="pizza" src="resources/images/2x/pizza.png" alt=""/>
+                <p:growl id="messages" showDetail="false"/>
+                <p:menu >
+                    <p:menuitem style="color:whitesmoke;" value="Menu" action="index" update="messages" />
+                    <p:menuitem style="color:whitesmoke;" value="Statistiques" action="StatisticsView" />
+                    <p:menuitem style="color:whitesmoke;" value="Mon compte" action="MyAccountView" />
+                </p:menu>
+            </h:form>
+
+            <h:form>        
+                <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="login">
+                    <p:graphicImage  value="resources/images/2x/account_box_white.png" />
+                </h:outputLink>
+
+                <p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+
+                <p:dialog header="Login" widgetVar="dlg" resizable="false">
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputLabel for="username" value="Username:" />
+                        <p:inputText id="username" value="#{userLoginView.username}" required="true" label="username" />
+
+                        <h:outputLabel for="password" value="Password:" />
+                        <p:password id="password" value="#{userLoginView.password}" required="true" label="password" />
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Login" update="growl" action="#{userLoginView.login}"
+                                             oncomplete="handleLoginRequest(xhr, status, args)" />
+                        </f:facet>  
+                    </h:panelGrid>
+                </p:dialog>    
+            </h:form>
+        </div>
+        <script type="text/javascript">
+            function handleLoginRequest(xhr, status, args) {
+                if (args.validationFailed || !args.loggedIn) {
+                    PF('dlg').jq.effect("shake", {times: 5}, 100);
+                } else {
+                    PF('dlg').hide();
+                    $('#loginLink').fadeOut();
+                }
+            }
+        </script>
+
+
+        <div id="Content">
+
+            <style type="text/css"> 
+                /*demo*/
+                .ui-dataview-list .ui-dataview-row {
+                    border-bottom: 1px solid #A8A8A8;
+                    padding: 25px 10px;
+                    /* with the exported variables from Nova and Luna Themes*/
+                    /*border-bottom-color: var(--input-border-color, #A8A8A8);*/
+                }
+
+                .logo {
+                    width: 5%;
+                }
+                .detail {
+                    width: 85%;
+                    padding-left: 25px;
+                }
+            </style>
+
+            <h:form id="form">
+                <p:dataView var="pizza" value="#{PizzaView.lesPizzas}" rows="12" paginator="true" rowsPerPageTemplate="6,12,16"
+                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+
+                    <p:dataViewGridItem>
+                        <p:panel header="#{pizza.id_pizza}" style="text-align:center">
+                            <h:panelGrid columns="1" style="width:100%">
+                                <p:graphicImage value="#{pizza.prix}"/> 
+
+                                <h:outputText value="#{pizza.nom_pizza}" />
+
+                                <p:commandLink update=":form:carDetail" oncomplete="PF('carDialog').show()" title="View Detail">
+                                    <h:outputText styleClass="ui-icon pi pi-search" style="margin:0 auto;" />
+                                    <f:setPropertyActionListener value="#{pizza}" target="#{PizzaView.selected_pizza}" />
+                                </p:commandLink>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:dataViewGridItem>
+
+                    <p:dataViewListItem>
+                        <table class="itemPizzaTable">
+                            <th width="52%">
+                                <h:panelGrid columns="3" style="width:100%" columnClasses="logo,detail">
+                                    <p:graphicImage style="width:100px;" value="#{pizza.image}" /> 
+                                    <p:outputPanel>
+                                        <h:panelGrid columns="2" cellpadding="5">
+                                            <h:outputText value="Prix pizza naine :" />
+                                            <h:outputText value="#{pizza.prix} €" style="font-weight: bold"/>
+
+                                            <h:outputText value="nom de la pizza :" />
+                                            <h:outputText value="#{pizza.nom_pizza}" style="font-weight: bold"/>
+
+                                            <h:outputText value="Ingrédients :" />
+                                            <h:outputText value="#{pizza.lesIngredients}" style="font-weight: bold"/>
+                                        </h:panelGrid> 
+                                    </p:outputPanel> 
+                                </h:panelGrid>
+                            </th>
+                            <th width="28%">
+                                <h3 style="margin-top:0">Selectionner la taille </h3>
+                                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">                        
+                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                                        <p:outputLabel for="format" value="Format:" />
+                                        <p:selectOneRadio id="format" value="#{PizzaView.infoRadioButton}" onchange="submit()"  unselectable="true">
+                                            <f:selectItem itemLabel="Naine" itemValue="#{pizza.id_pizza}_Naine" />
+                                            <f:selectItem itemLabel="Humaine" itemValue="#{pizza.id_pizza}_Humaine" />
+                                            <f:selectItem itemLabel="Ogresse" itemValue="#{pizza.id_pizza}_Ogresse" />
+                                        </p:selectOneRadio>
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </th>
+                            <th style="right:0">
+                                <p:growl id="growl" life="2000" />
+                                <p:commandButton value="Acheter" id="ajax" update="growl" action="#{PizzaView.buttonBuy}" styleClass="ui-priority-primary" />
+                            </th>
+                        </table> 
+
+                        <p:commandLink update=":form:carDetail" oncomplete="PF('carDialog').show()" title="View Detail">
+                            <h:outputText styleClass="ui-icon pi pi-search" style="margin:0 auto;" />
+                            <f:setPropertyActionListener value="#{pizza}" target="#{PizzaView.selected_pizza}" />
+                        </p:commandLink>
+
+                    </p:dataViewListItem>
+                </p:dataView>
+
+                <p:dialog header="Car Info" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                    <p:outputPanel id="carDetail" style="text-align:center;">
+                        <p:panelGrid  columns="2" rendered="#{not empty PizzaView.selected_pizza}" columnClasses="label,value">
+                            <f:facet name="header">
+                                <img class="pizzaImg" value="#{PizzaView.selected_pizza.image}"/>
+                            </f:facet>
+
+                            <h:outputText value="Id:" />
+                            <h:outputText value="#{PizzaView.selected_pizza.id_pizza} €" />
+
+                            <h:outputText value="Nom:" />
+                            <h:outputText value="#{PizzaView.selected_pizza.nom_pizza}" />
+
+                            <h:outputText value="Ingredients" />
+                            <h:outputText value="#{PizzaView.selected_pizza.lesIngredients}" />
+
+                            <h:outputText value="Prix" />
+                            <h:outputText value="$#{PizzaView.selected_pizza.prix}" />
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </p:dialog>
+            </h:form>
+        </div>
+           
+        
+        <div id="bandeau">
+            <h:outputText style="display: block ; margin-top: 1.5%; margin-left: 1.5%" value="Prix de la pizza sélectionné #{PizzaView.prixFinal} €"> </h:outputText>
+        </div>
+        
+        
+    
+    </h:body>
+</html>
+

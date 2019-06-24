@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <h:outputStylesheet library = "css" name = "styles.css" /> 
+    </h:head>
+
+    <h:body>
+        <div id="Menu">
+            <h:form>  
+                <h1 id="titre"> Rapizz</h1>
+                <img id="pizza" src="resources/images/2x/pizza.png" alt=""/>
+                <p:growl id="messages" showDetail="false"/>
+                <p:menu >
+                    <p:menuitem style="color:whitesmoke;" value="Menu" action="index" update="messages" />
+                    <p:menuitem style="color:whitesmoke;" value="Statistiques" action="StatisticsView" />
+                    <p:menuitem style="color:whitesmoke;" value="Mon compte" action="MyAccountView" />
+                </p:menu>
+            </h:form>
+
+            <h:form>        
+                <h:outputLink style="alignment-adjust: central" value="javascript:void(0)" onclick="PF('dlg').show();" title="login">
+                    <p:graphicImage  value="resources/images/2x/account_box_white.png" />
+                </h:outputLink>
+
+                <p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+
+                <p:dialog header="Login" widgetVar="dlg" resizable="false">
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputLabel for="username" value="Username:" />
+                        <p:inputText id="username" value="#{userLoginView.username}" required="true" label="username" />
+
+                        <h:outputLabel for="password" value="Password:" />
+                        <p:password id="password" value="#{userLoginView.password}" required="true" label="password" />
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Login" update="growl" action="#{userLoginView.login}"
+                                             oncomplete="handleLoginRequest(xhr, status, args)" />
+                        </f:facet>  
+                    </h:panelGrid>
+                </p:dialog>    
+            </h:form>
+        </div>
+        <script type="text/javascript">
+            function handleLoginRequest(xhr, status, args) {
+                if (args.validationFailed || !args.loggedIn) {
+                    PF('dlg').jq.effect("shake", {times: 5}, 100);
+                } else {
+                    PF('dlg').hide();
+                    $('#loginLink').fadeOut();
+                }
+            }
+        </script>
+
+
+        <div id="Content">
+            <h:form>
+                <p:growl id="msgs" showDetail="true" />
+
+                <p:fieldset legend="Entreprise" toggleable="true" toggleSpeed="100">
+                    <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <p:graphicImage value="resources/images/2x/trending_up.png" />
+                        <h:outputText value=" Chiffre d'Affaires : "></h:outputText>
+                        <p:graphicImage value="resources/images/2x/accessibility.png" />
+                        <h:outputText value=" Nb clients : "></h:outputText>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:fieldset legend="Ressources" toggleable="true" toggleSpeed="100">
+                    <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputText value="Meilleur client (criètre : argent)"></h:outputText>
+                        <p:graphicImage value="resources/images/2x/sentiment_satisfied.png" />
+                        <h:outputText value="Nom : "></h:outputText>
+                        <h:outputText value="Id : "></h:outputText>
+                        <h:outputText value="Argents : "></h:outputText>
+                        <h:outputText value="Nombre de commandes : "></h:outputText>
+                    </h:panelGrid>
+
+                    <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputText value="Meilleur client (criètre : nombre de commandes)"></h:outputText>
+                        <p:graphicImage value="resources/images/2x/sentiment_satisfied.png" />
+                        <h:outputText value="Nom : "></h:outputText>
+                        <h:outputText value="Id : "></h:outputText>
+                        <h:outputText value="Argents : "></h:outputText>
+                        <h:outputText value="Nombre de commandes : "></h:outputText>
+                    </h:panelGrid>
+
+                    <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputText value="Pire livreur (criètre : nombre de retards)"></h:outputText>
+                        <p:graphicImage value="resources/images/2x/mood_bad.png" />
+                        <h:outputText value="Nom : "></h:outputText>
+                        <h:outputText value="Id : "></h:outputText>
+                        <h:outputText value="Argents : "></h:outputText>
+                        <h:outputText value="Nombre de commandes : "></h:outputText>
+                    </h:panelGrid>
+
+                    <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputText value="Pire véhicule (criètre : nombre de retards)"></h:outputText>
+                        <p:graphicImage value="resources/images/2x/mood_bad.png" />
+                        <h:outputText value="Nom "></h:outputText>
+                        <h:outputText value="Marque : "></h:outputText>
+                        <h:outputText value="Nombres de retard : "></h:outputText>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:fieldset legend="Produits" toggleable="true" toggleSpeed="100">
+                    <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputText value="Meilleur pizza : "> </h:outputText> 
+                        <!-- <p:graphicImage value="Todo Image Meilleur pizza" /> -->
+                        <h:outputText value="Nom de la pizza : "></h:outputText>
+                        <br/>
+                        <h:outputText value="Pizza la moins demandée : "> </h:outputText> 
+                        <!-- <p:graphicImage value="Todo Image Meilleur pizza" /> -->
+                        <h:outputText value="Nom de la pizza : "></h:outputText>                                        
+                    </h:panelGrid>
+                </p:fieldset>
+
+
+
+                <p:fieldset legend="Divers" toggleable="true" toggleSpeed="100">
+                    <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <p:graphicImage value="resources/images/2x/gift.png" />
+                        <h:outputText value ="Nombre de non-facturation (raison : fidélité) : "></h:outputText>
+                        <p:graphicImage value="resources/images/2x/gift.png" />
+                        <h:outputText value ="Nombre de non-facturation (raison : retard de livraison (+30 min)) : "></h:outputText>
+                    </h:panelGrid>
+                </p:fieldset>
+
+
+
+            </h:form>
+        </div>
+
+    </h:body>
+
+</html>

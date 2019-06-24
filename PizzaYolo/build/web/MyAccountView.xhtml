@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Mon compte</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet library = "css" name = "styles.css" /> 
+    </h:head>
+    <h:body>
+        <div id="Menu">
+            <h:form> 
+                <h1 id="titre"> Rapizz</h1>
+                <img id="pizza" src="resources/images/2x/pizza.png" alt=""/>
+                <p:growl id="messages" showDetail="false"/>
+                <p:menu >
+                    <p:menuitem style="color:whitesmoke;" value="Menu" action="index" update="messages" />
+                    <p:menuitem style="color:whitesmoke;" value="Statistiques" action="StatisticsView" />
+                    <p:menuitem style="color:whitesmoke;" value="Mon compte" action="MyAccountView" />
+                </p:menu>
+            </h:form>
+
+            <h:form>        
+                <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="login">
+                    <p:graphicImage value="resources/images/2x/account_box_white.png" />
+                </h:outputLink>
+
+                <p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+
+                <p:dialog header="Login" widgetVar="dlg" resizable="false">
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputLabel for="username" value="Username:" />
+                        <p:inputText id="username" value="#{userLoginView.username}" required="true" label="username" />
+
+                        <h:outputLabel for="password" value="Password:" />
+                        <p:password id="password" value="#{userLoginView.password}" required="true" label="password" />
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Login" update="growl" action="#{userLoginView.login}"
+                                             oncomplete="handleLoginRequest(xhr, status, args)" />
+                        </f:facet>  
+                    </h:panelGrid>
+                </p:dialog>    
+            </h:form>
+        </div>
+        <script type="text/javascript">
+            function handleLoginRequest(xhr, status, args) {
+                if (args.validationFailed || !args.loggedIn) {
+                    PF('dlg').jq.effect("shake", {times: 5}, 100);
+                } else {
+                    PF('dlg').hide();
+                    $('#loginLink').fadeOut();
+                }
+            }
+        </script>
+
+        <div id="Content">    
+            <h:form >
+                <h3> Approvisionnement du compte  </h3>
+                <p> Montant que vous voulez ajouter : </p>
+                <p:remoteCommand name="test" actionListener="#{myAccountController.ComputeValue()}"/>
+                <p:inputText id="commentInput" value="#{myAccountController.montant}" onkeypress="if (event.keyCode === 13) {
+                            test();
+                            return false;
+                        }"/>    
+            </h:form>
+            <br/>
+            <h3 style="margin-top:2px; margin-left: 2px"> Mon compte </h3>
+            <p:panelGrid columns="2">
+
+                <h:outputText value="Nom et prénom:" />
+                <h:outputText value="#{myAccountController.user.nom_user}" />
+
+                <h:outputText value="Mon solde :" />
+                <h:outputText value="#{myAccountController.user.solde} €" />
+
+                <h:outputText value="Role :" />
+                <h:outputText value="#{myAccountController.user.role}" />
+
+                <h:outputText value="Nombre de commandes :" />
+                <h:outputText value="#{myAccountController.user.nb_pizzas}" />
+            </p:panelGrid>
+
+            <p:dataView var="command" value="#{myAccountController.commandes}" rows="12" paginator="true" rowsPerPageTemplate="6,12,16"
+                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        gridIcon="pi pi-th-large" listIcon="pi pi-bars">
+
+                <p:dataViewGridItem>
+                    <p:panel header="#{command.id_commande}" style="text-align:center">
+                        <h:panelGrid columns="1" style="width:100%">
+                            <img class="pizzaImg" src="#{command.pizza.image}" /> 
+                            <h:outputText value="#{command.pizza.nom_pizza}" />
+                            <h:outputText value="#{command.taille_pizza}" />
+                            <h:outputText value="#{command.prix}" />
+                        </h:panelGrid>
+                    </p:panel>
+                </p:dataViewGridItem>
+
+                <p:dataViewListItem>
+                    <h:panelGrid columns="3" style="width:100%" columnClasses="logo,detail">
+                        <img class="pizzaImg_offset" src="#{command.pizza.image}" /> 
+
+                        <p:outputPanel>
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <h:outputText value="Numéro de commande :" />
+                                <h:outputText value="#{command.id_commande}" style="font-weight: bold"/>
+
+                                <h:outputText value="Nom de la pizza :" />
+                                <h:outputText value="#{command.pizza.nom_pizza}" style="font-weight: bold"/>
+
+                                <h:outputText value="Prix de la pizza :" />
+                                <h:outputText value="#{command.prix}" style="font-weight: bold"/>
+
+                                <h:outputText value="Format:" />
+                                <h:outputText value="#{command.taille_pizza}" style="font-weight: bold"/>
+
+                                <h:outputText value="Date de commandes :" />
+                                <h:outputText value="#{command.date_commande}" style="font-weight: bold"/>
+
+                                <h:outputText value="Date de livraison :" />
+                                <h:outputText value="#{command.date_Livraison}" style="font-weight: bold"/>
+
+                                <h:outputText value="Temps de livraison :" />
+                                <h:outputText value="1000 ans" style="font-weight: bold"/> 
+                            </h:panelGrid>
+                        </p:outputPanel>                   
+                    </h:panelGrid>
+                </p:dataViewListItem>
+            </p:dataView>
+
+
+
+
+
+        </div>
+
+
+    </h:body>
+</html>
