@@ -1,11 +1,12 @@
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
 @ManagedBean
-public class RadioView {
+public class RadioView implements Serializable{
      
     private String console;    
     private String city; 

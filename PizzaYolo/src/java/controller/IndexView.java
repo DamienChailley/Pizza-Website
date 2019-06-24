@@ -9,7 +9,9 @@ import entityServer.Utilisateur;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import model.UtilisateurDAO;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -21,26 +23,83 @@ import org.primefaces.model.menu.MenuModel;
  * @author yan20
  */
 @ManagedBean(name="IndexView")
+@SessionScoped
 public class IndexView {
      
-    
-    
-    
-    IndexView() {
+    public IndexView() {
         
         
 
 
     }
-         // Utilisateur connecté à travers les pages
+    
+     // Utilisateur connecté à travers les pages
     
     private Utilisateur current_connected_user ;
     private static Utilisateur currentConnectedUser;
-     
-    private String password;
+    
+    // Savoir si un utilisateur est connecté pour afficher les menus correspondants
+    private boolean loggedIn;
+    
+    // Gerer la visibilité des boutons Se Connecter et Deconnecter
+    private boolean visible = true;
+    
     private String username;     
-   
+    private String password;    
     private String orientation = "horizontal"; 
+    
+    // Renvoi le nom du pannel de connexion
+    private String titleLoginPannel = "Se Connecter";
+    
+    public void login() {
+//        FacesMessage message = null;
+        loggedIn = false;
+        
+        current_connected_user = UtilisateurDAO.check_User_Connection(username, password);
+        
+        if(current_connected_user !=null) {
+            if(current_connected_user.getLogin().equalsIgnoreCase(username) && current_connected_user.getMotDePasse().equalsIgnoreCase(password)) {
+                loggedIn = true;
+            currentConnectedUser = current_connected_user;
+            visible = false;
+//            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenue", username);
+            
+            System.out.println("loggedIn "+loggedIn+ " User name : "+currentConnectedUser.getLogin()+" User id : "+currentConnectedUser.getId_user());
+            }
+            
+        } else {
+            loggedIn = false;
+//            message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Erreur d'identification", "Identifiants erronés");
+        }
+         
+//        FacesContext.getCurrentInstance().addMessage(null, message);
+//        PrimeFaces.current().ajax().addCallbackParam("loggedIn", loggedIn);
+    }  
+    
+    public void deconnect() {
+        FacesMessage message = null;
+        loggedIn = false;
+        visible = true;
+        current_connected_user = null;
+        currentConnectedUser = current_connected_user;
+        message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Aurevoir", username);
+        username = null;
+        
+        show();
+         
+         
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }  
+    
+    
+    public void show(){
+        titleLoginPannel="Se connecter";
+    }
+    
+    public void hide(){
+        visible = false;        
+        titleLoginPannel="Deconnexion";
+    }
     
     public String getOrientation() {
         return orientation;
@@ -65,23 +124,43 @@ public class IndexView {
     public void setPassword(String password) {
         this.password = password;
     }
-   
-    public void login() {
-        FacesMessage message = null;
-        boolean loggedIn = false;
-         
-        if(username != null && username.equals("admin") && password != null && password.equals("admin")) {
-            loggedIn = true;
-            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Welcome", username);
-        } else {
-            loggedIn = false;
-            message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Loggin Error", "Invalid credentials");
-        }
-         
-        FacesContext.getCurrentInstance().addMessage(null, message);
-        PrimeFaces.current().ajax().addCallbackParam("loggedIn", loggedIn);
-    }  
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public String getTitleLoginPannel() {
+        return titleLoginPannel;
+    }
+
+    public void setTitleLoginPannel(String titleLoginPannel) {
+        this.titleLoginPannel = titleLoginPannel;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    public Utilisateur getCurrent_connected_user() {
+        return current_connected_user;
+    }
+
+    public void setCurrent_connected_user(Utilisateur current_connected_user) {
+        this.current_connected_user = current_connected_user;
+    }
     
+     
+    public static Utilisateur get_static_currentConnectedUser() {
+        return currentConnectedUser;
+    }
     
     
     // Menu View Part 
@@ -145,14 +224,16 @@ public class IndexView {
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-    
-        public static Utilisateur getCurrentConnectedUser() {
+
+    public static Utilisateur getCurrentConnectedUser() {
         return currentConnectedUser;
     }
 
     public static void setCurrentConnectedUser(Utilisateur currentConnectedUser) {
         IndexView.currentConnectedUser = currentConnectedUser;
     }
+    
+    
     
     
     

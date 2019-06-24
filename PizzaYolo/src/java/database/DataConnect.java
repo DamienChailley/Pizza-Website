@@ -27,7 +27,7 @@ public class DataConnect
     {
         String connection_name = "jdbc:mysql://localhost:3306/pizza"; 
         String connection_user = "root";
-        String connextion_password = "";
+        String connextion_password = "root";
     
         try  
         { 

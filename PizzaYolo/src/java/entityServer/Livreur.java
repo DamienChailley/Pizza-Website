@@ -7,14 +7,12 @@ package entityServer;
 
 import java.io.Serializable;
 
-/**
- *
- * @author yan20
- */
 public class Livreur implements Serializable{
     private int id_liv;
     private String nom_livreur;
     private String prenom_livreur;
+    private int totalRetards;
+    private int TempsTotalRetards;
 
     public Livreur() {
     }
@@ -48,6 +46,24 @@ public class Livreur implements Serializable{
     public void setPrenom_livreur(String prenom_livreur) {
         this.prenom_livreur = prenom_livreur;
     }
+
+    public int getTotalRetards() {
+        return totalRetards;
+    }
+
+    public void setTotalRetards(int totalRetards) {
+        this.totalRetards = totalRetards;
+    }
+
+    public int getTempsTotalRetards() {
+        return TempsTotalRetards;
+    }
+
+    public void setTempsTotalRetards(int TempsTotalRetards) {
+        this.TempsTotalRetards = TempsTotalRetards;
+    }
+    
+    
     
     
     

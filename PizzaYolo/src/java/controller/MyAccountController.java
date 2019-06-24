@@ -8,7 +8,6 @@ package controller;
 import entityServer.Commande;
 import entityServer.Utilisateur;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -35,27 +34,7 @@ public class MyAccountController implements Serializable {
 
     private Utilisateur user;
 
-    private String montant;
 
-    
-    private double valueToSend;
-    
-    
-    public String getMontant() {
-        return montant;
-    }
-
-    public void setMontant(String montant) {
-        this.montant = montant;
-    }
-    
-    public static Integer TryParseInt(String someText) {
-    try {
-       return Integer.parseInt(someText);
-    } catch (NumberFormatException ex) {
-       return null;
-    }
-}
      
     @PostConstruct
     public void init() {
@@ -95,18 +74,7 @@ public class MyAccountController implements Serializable {
     public void setUser(Utilisateur user) {
         this.user = user;
     }
-
-    //Fonction qui est appellé quand on appuie sur entrée
-      //Fonction qui est appellé quand on appuie sur entrée
-    public void ComputeValue() {
-        valueToSend = TryParseInt(montant);
-        
-        if(valueToSend == 0 ) return;
-        
-        user = IndexView.getCurrentConnectedUser();
-        
-        double nouveauMontant = valueToSend + user.getSolde();
-        
-        UtilisateurDAO.update_user(user.getId_user(), user.getPrenom_user(), user.getNom_user(), user.getLogin(), user.getMotDePasse(), user.getRole(), nouveauMontant, user.getNb_pizzas(), user.getCarteBancaire(),true);
-    }
+   
+    
+  
 }

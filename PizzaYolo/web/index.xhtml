@@ -11,10 +11,6 @@
     </h:head>
 
     <h:body>
-         <div id="infocompte">
-             <h:outputText style="display:block ; margin-top: 13px; margin-top: 5px; margin-left: 5px; z-index: 2;" value="#{PizzaView.user.nom_user} | #{PizzaView.user.getSolde()} €" rendered="#{PizzaView.user != null}" > </h:outputText>
-        </div>
-        
         <div id="Menu">
             <h:form> 
                 <h1 id="titre"> Rapizz</h1>
@@ -34,17 +30,34 @@
 
                 <p:growl id="growl" sticky="true" showDetail="true" life="3000" />
 
-                <p:dialog header="Login" widgetVar="dlg" resizable="false">
+                <p:dialog header="#{IndexView.titleLoginPannel}" widgetVar="dlg" resizable="false" >
                     <h:panelGrid columns="2" cellpadding="5">
-                        <h:outputLabel for="username" value="Username:" />
-                        <p:inputText id="username" value="#{userLoginView.username}" required="true" label="username" />
-
-                        <h:outputLabel for="password" value="Password:" />
-                        <p:password id="password" value="#{userLoginView.password}" required="true" label="password" />
-
+                        <h:panelGroup id="loginLabelPanel">
+                            <h:outputLabel for="username" value="Identifiant: " rendered="#{IndexView.visible}"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="loginInputPanel">
+                            <p:inputText id="username" value="#{IndexView.username}" required="true" label="username" rendered="#{IndexView.visible}"/>
+                            </h:panelGroup>
+                             <h:panelGroup id="passwordLabelPanel">
+                            <h:outputLabel for="password" value="Mot de passe: " rendered="#{IndexView.visible}"/>
+                            </h:panelGroup>
+                            <h:panelGroup id="passwordInputPanel">
+                            <p:password id="password" value="#{IndexView.password}" required="true" label="password" rendered="#{IndexView.visible}" />
+                        </h:panelGroup>   
                         <f:facet name="footer">
-                            <p:commandButton value="Login" update="growl" action="#{userLoginView.login}"
-                                             oncomplete="handleLoginRequest(xhr, status, args)" />
+                            <h:panelGroup id="loginButtonPanel">
+                                <p:commandButton value="#{IndexView.titleLoginPannel}" update="growl" actionListener="#{IndexView.login()}"
+                                                 oncomplete="handleLoginRequest(xhr, status, args)" rendered="#{IndexView.visible}" >
+                                    <f:ajax execute="@form" render="@form"/>
+                                </p:commandButton>
+                            </h:panelGroup>    
+                            <h:panelGroup id="DeconnectButtonPanel">
+                                <p:commandButton value="#{IndexView.titleLoginPannel}" update="growl" actionListener="#{IndexView.deconnect()}"
+                                                 oncomplete="handleLoginRequest(xhr, status, args)" rendered="#{IndexView.loggedIn}"  >
+                                    <f:ajax execute="@form" render="@form"/>
+                            
+                            </p:commandButton>  
+                            </h:panelGroup>   
                         </f:facet>  
                     </h:panelGrid>
                 </p:dialog>    
@@ -60,7 +73,6 @@
                 }
             }
         </script>
-
 
         <div id="Content">
 
@@ -126,12 +138,13 @@
                                 <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">                        
                                     <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
                                         <p:outputLabel for="format" value="Format:" />
-                                        <p:selectOneRadio id="format" value="#{PizzaView.infoRadioButton}" onchange="submit()"  unselectable="true">
-                                            <f:selectItem itemLabel="Naine" itemValue="#{pizza.id_pizza}_Naine" />
-                                            <f:selectItem itemLabel="Humaine" itemValue="#{pizza.id_pizza}_Humaine" />
-                                            <f:selectItem itemLabel="Ogresse" itemValue="#{pizza.id_pizza}_Ogresse" />
+                                        <p:selectOneRadio id="format" value="#{PizzaView.infoRadioButton}" unselectable="true">
+                                            <f:selectItem itemLabel="Naine" itemValue="${pizza.id_pizza}_Naine" />
+                                            <f:selectItem itemLabel="Humaine" itemValue="${pizza.id_pizza}_Humaine" />
+                                            <f:selectItem itemLabel="Ogresse" itemValue="${pizza.id_pizza}_Ogresse" />
                                         </p:selectOneRadio>
                                     </h:panelGrid>
+
                                 </h:panelGrid>
                             </th>
                             <th style="right:0">
@@ -171,14 +184,12 @@
                 </p:dialog>
             </h:form>
         </div>
-           
-        
+
+
         <div id="bandeau">
-            <h:outputText style="display: block ; margin-top: 1.5%; margin-left: 1.5%" value="Prix de la pizza sélectionné #{PizzaView.prixFinal} €"> </h:outputText>
+            <h:outputText style="display: block ; margin-top: 1.5%; margin-left: 1.5%" value="Prix de la pizza sélectionné ${PizzaView.prixFinal} €"> </h:outputText>
         </div>
-        
-        
-    
+
     </h:body>
 </html>
 

@@ -19,7 +19,7 @@ import java.util.List;
 
 public class UtilisateurDAO {
     
-      public static Utilisateur get_user_by_id(int id_user) {
+    public static Utilisateur get_user_by_id(int id_user) {
         Utilisateur unUtilisateur = new Utilisateur();
 
         Connection con = null;
@@ -178,7 +178,7 @@ public class UtilisateurDAO {
         try {
             con = DataConnect.getConnection();
                 //id_user, Nom_user, login, motDePasse, role, solde, nb_pizzas, carteBancaire, Abonnement
-            String SQL = " UPDATE utilsateur "
+            String SQL = " UPDATE utilisateur "
                     + " SET prenom_user = '"+prenom_user+"', "
                     + " nom_user = '"+nom_user+"', "
                     + " login = '"+login+"', "

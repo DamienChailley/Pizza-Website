@@ -61,17 +61,8 @@ and open the template in the editor.
             }
         </script>
 
-        <div id="Content">    
-            <h:form >
-                <h3> Approvisionnement du compte  </h3>
-                <p> Montant que vous voulez ajouter : </p>
-                <p:remoteCommand name="test" actionListener="#{myAccountController.ComputeValue()}"/>
-                <p:inputText id="commentInput" value="#{myAccountController.montant}" onkeypress="if (event.keyCode === 13) {
-                            test();
-                            return false;
-                        }"/>    
-            </h:form>
-            <br/>
+        <div id="Content">
+
             <h3 style="margin-top:2px; margin-left: 2px"> Mon compte </h3>
             <p:panelGrid columns="2">
 
@@ -134,11 +125,6 @@ and open the template in the editor.
                     </h:panelGrid>
                 </p:dataViewListItem>
             </p:dataView>
-
-
-
-
-
         </div>
 
 
