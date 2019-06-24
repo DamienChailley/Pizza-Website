@@ -139,4 +139,84 @@ public class PizzaDAO {
         return lesIngredients;
 
     }
+     
+         
+      public static Pizza get_best_pizza() {
+        Pizza unePizza = new Pizza();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DataConnect.getConnection();
+
+            String SQL = " SELECT p.id_pizza, nom_pizza, p.prix, image, count(id_commande) as nbCommande "+
+                        " FROM Commandes c "+
+                        " INNER JOIN Pizza P on P.id_pizza = C.id_pizza "+
+                        " GROUP BY (C.id_pizza) "+
+                        " ORDER BY nbCommande DESC "+
+                        " limit 1 ; ";
+
+            ps = con.prepareStatement(
+                    SQL
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id_pizza = rs.getInt("id_pizza");
+                String Nom_pizza = rs.getString("Nom_pizza");
+                double Prix = rs.getDouble("Prix");
+                String image = rs.getString("image");
+                unePizza = new Pizza(id_pizza, Nom_pizza, Prix, image);
+
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Exception e get_best_pizza error -->" + ex.getMessage());
+        } finally {
+            DataConnect.close(con);
+        }
+
+        return unePizza;
+
+    }
+      
+      public static Pizza get_Pire_Pizza() {
+        Pizza unePizza = new Pizza();
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DataConnect.getConnection();
+
+            String SQL = " SELECT p.id_pizza, nom_pizza, p.prix, image, count(id_commande) as nbCommande "+
+                        " FROM Commandes c "+
+                        " INNER JOIN Pizza P on P.id_pizza = C.id_pizza "+
+                        " GROUP BY (C.id_pizza) "+
+                        " ORDER BY nbCommande "+
+                        " limit 1 ; ";
+
+            ps = con.prepareStatement(
+                    SQL
+            );
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id_pizza = rs.getInt("id_pizza");
+                String Nom_pizza = rs.getString("Nom_pizza");
+                double Prix = rs.getDouble("Prix");
+                String image = rs.getString("image");
+                unePizza = new Pizza(id_pizza, Nom_pizza, Prix, image);
+
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Exception e get_Pire_Pizza error -->" + ex.getMessage());
+        } finally {
+            DataConnect.close(con);
+        }
+
+        return unePizza;
+
+    }
+     
 }

@@ -102,9 +102,9 @@ public class MyAccountController implements Serializable {
         valueToSend = TryParseInt(montant);
         
         if(valueToSend == 0 ) return;
-        
+        System.err.println("Saisie Saisie !");
         user = IndexView.getCurrentConnectedUser();
-        
+        user = UtilisateurDAO.get_user_by_id(2); //remove
         double nouveauMontant = valueToSend + user.getSolde();
         
         UtilisateurDAO.update_user(user.getId_user(), user.getPrenom_user(), user.getNom_user(), user.getLogin(), user.getMotDePasse(), user.getRole(), nouveauMontant, user.getNb_pizzas(), user.getCarteBancaire(),true);

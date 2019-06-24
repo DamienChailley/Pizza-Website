@@ -178,7 +178,7 @@ public class UtilisateurDAO {
         try {
             con = DataConnect.getConnection();
                 //id_user, Nom_user, login, motDePasse, role, solde, nb_pizzas, carteBancaire, Abonnement
-            String SQL = " UPDATE utilsateur "
+            String SQL = " UPDATE utilisateur "
                     + " SET prenom_user = '"+prenom_user+"', "
                     + " nom_user = '"+nom_user+"', "
                     + " login = '"+login+"', "

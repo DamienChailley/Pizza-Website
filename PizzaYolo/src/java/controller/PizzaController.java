@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ApplicationScoped;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -34,7 +35,7 @@ import org.primefaces.PrimeFaces;
  * @author yan20
  */
 @ManagedBean(name = "PizzaView")
-@SessionScoped
+@ApplicationScoped
 public class PizzaController implements Serializable {
 
     private int id_pizza;
@@ -58,7 +59,7 @@ public class PizzaController implements Serializable {
     String lesIngredientsSTR = "";
 
     private Utilisateur user;
-    private int connectedIdUser = 2; // todo
+    private int connectedIdUser = 2;
 
     private String selected_Format;
     private double prixFinal;
@@ -69,11 +70,8 @@ public class PizzaController implements Serializable {
 
         lesPizzas = PizzaDAO.get_all_pizza();
 
-        images = new ArrayList<String>();
-        for (int i = 1; i <= 12; i++) {
-            images.add("nature" + i + ".jpg");
-        }
-
+        // this.connectedIdUser = IndexView.get_static_currentConnectedUser().getId_user();
+        
         this.user = UtilisateurDAO.get_user_by_id(connectedIdUser);
     }
 
@@ -263,9 +261,9 @@ public class PizzaController implements Serializable {
             }
 
             System.out.println("controller.PizzaController.buttonBuy() : Get Nb Pizzas : " + this.user.getNb_pizzas());
-            if (this.user.getNb_pizzas() % 10 == 0) {
-                this.prixFinal = 0;
-            }
+          //  if (this.user.getNb_pizzas() % 10 == 0) {
+          //      this.prixFinal = 0;
+          //  }
 
             // On créé la commande 
             //création de la Date
@@ -291,8 +289,9 @@ public class PizzaController implements Serializable {
             int id_livreur_en_charge = rand.nextInt(nb_livreur + 1) + borne_min;
 
             CommandeDAO.insert_commande(actuelle, Date_de_livraison, this.selected_pizza.getNom_pizza(), this.prixFinal, this.user.getId_user(), this.selected_pizza.getId_pizza(), id_livreur_en_charge);
-
-            //todo enlever argent 
+                
+            this.user.setSolde(this.prixFinal);
+          
         }
     }
 

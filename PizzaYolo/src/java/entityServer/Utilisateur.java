@@ -7,12 +7,10 @@ package entityServer;
 
 import java.io.Serializable;
 
-/**
- *
- * @author yan20
- */
+
 public class Utilisateur implements Serializable {
-    private int id_user;
+    private int id_user;    
+    private String prenom_user;
     private String nom_user;
     private String login;
     private String motDePasse;
@@ -21,12 +19,13 @@ public class Utilisateur implements Serializable {
     private int nb_pizzas;
     private String carteBancaire;
     private boolean abonnement;
-    private String prenom_user;
-    
+    private int nb_commandes;
+    private double total_achat;
+
     public Utilisateur() {
     }
 
-     public Utilisateur(int id_client, String prenom_user, String nom_user, String login, String motDePasse, String role, double solde, int nb_pizzas, String carteBancaire, boolean abonnement) {
+    public Utilisateur(int id_client, String prenom_user, String nom_user, String login, String motDePasse, String role, double solde, int nb_pizzas, String carteBancaire, boolean abonnement) {
         this.id_user = id_client;
         this.prenom_user = prenom_user;
         this.nom_user = nom_user;
@@ -46,6 +45,14 @@ public class Utilisateur implements Serializable {
     public void setId_user(int id_user) {
         this.id_user = id_user;
     }
+
+    public String getPrenom_user() {
+        return prenom_user;
+    }
+
+    public void setPrenom_user(String prenom_user) {
+        this.prenom_user = prenom_user;
+    }        
 
     public String getNom_user() {
         return nom_user;
@@ -111,13 +118,23 @@ public class Utilisateur implements Serializable {
         this.role = role;
     }
 
-    public String getPrenom_user() {
-        return prenom_user;
+    public int getNb_commandes() {
+        return nb_commandes;
     }
 
-    public void setPrenom_user(String prenom_user) {
-        this.prenom_user = prenom_user;
+    public void setNb_commandes(int nb_commandes) {
+        this.nb_commandes = nb_commandes;
     }
+
+    public double getTotal_achat() {
+        return total_achat;
+    }
+
+    public void setTotal_achat(double total_achat) {
+        this.total_achat = total_achat;
+    }
+    
+    
     
     
     

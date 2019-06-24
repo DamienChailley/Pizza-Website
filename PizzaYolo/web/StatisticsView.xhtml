@@ -9,8 +9,12 @@
     </h:head>
 
     <h:body>
+        <div id="infocompte">
+             <h:outputText style="display:block ; margin-top: 13px; margin-top: 5px; margin-left: 5px; z-index: 2;" value="#{PizzaView.user.nom_user} | #{PizzaView.user.getSolde()} €" rendered="#{PizzaView.user != null}" > </h:outputText>
+        </div> 
+        
         <div id="Menu">
-            <h:form>  
+            <h:form> 
                 <h1 id="titre"> Rapizz</h1>
                 <img id="pizza" src="resources/images/2x/pizza.png" alt=""/>
                 <p:growl id="messages" showDetail="false"/>
@@ -22,23 +26,29 @@
             </h:form>
 
             <h:form>        
-                <h:outputLink style="alignment-adjust: central" value="javascript:void(0)" onclick="PF('dlg').show();" title="login">
+                <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="login">
                     <p:graphicImage  value="resources/images/2x/account_box_white.png" />
                 </h:outputLink>
 
                 <p:growl id="growl" sticky="true" showDetail="true" life="3000" />
 
-                <p:dialog header="Login" widgetVar="dlg" resizable="false">
+                <p:dialog header="#{IndexView.titleLoginPannel}" widgetVar="dlg" resizable="false" >
                     <h:panelGrid columns="2" cellpadding="5">
-                        <h:outputLabel for="username" value="Username:" />
-                        <p:inputText id="username" value="#{userLoginView.username}" required="true" label="username" />
+                        <h:outputLabel for="username" value="Identifiant: " rendered="#{IndexView.visible}"/>
+                        <p:inputText id="username" value="#{IndexView.username}" required="true" label="username" rendered="#{IndexView.visible}"/>
 
-                        <h:outputLabel for="password" value="Password:" />
-                        <p:password id="password" value="#{userLoginView.password}" required="true" label="password" />
+                        <h:outputLabel for="password" value="Mot de passe: " rendered="#{IndexView.visible}"/>
+                        <p:password id="password" value="#{IndexView.password}" required="true" label="password" rendered="#{IndexView.visible}" />
 
                         <f:facet name="footer">
-                            <p:commandButton value="Login" update="growl" action="#{userLoginView.login}"
-                                             oncomplete="handleLoginRequest(xhr, status, args)" />
+                            <p:commandButton value="#{IndexView.titleLoginPannel}" update="growl" action="#{IndexView.login}"
+                                             oncomplete="handleLoginRequest(xhr, status, args)" rendered="#{IndexView.visible}" >
+                                   <f:ajax execute="@form" render="@form"/>
+                            </p:commandButton>       
+                            <p:commandButton value="#{IndexView.titleLoginPannel}" update="growl" action="#{IndexView.deconnect}"
+                                             oncomplete="handleLoginRequest(xhr, status, args)" rendered="#{IndexView.loggedIn}" >
+                                   <f:ajax execute="@form" render="@form"/>
+                            </p:commandButton>  
                         </f:facet>  
                     </h:panelGrid>
                 </p:dialog>    
@@ -55,72 +65,86 @@
             }
         </script>
 
-
         <div id="Content">
+        <div id="infocompte">
+             <h:outputText style="display:block ; margin-top: 13px; margin-top: 5px; margin-left: 5px; z-index: 2;" value="#{PizzaView.user.nom_user} | #{PizzaView.user.getSolde()} €" rendered="#{PizzaView.user != null}" > </h:outputText>
+        </div>
             <h:form>
                 <p:growl id="msgs" showDetail="true" />
-
+                <h:outputText value=" CurrentUser : #{statisticsController.currentConnectedUser.login}"> </h:outputText>
                 <p:fieldset legend="Entreprise" toggleable="true" toggleSpeed="100">
                     <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
                     <h:panelGrid columns="2" cellpadding="5">
                         <p:graphicImage value="resources/images/2x/trending_up.png" />
-                        <h:outputText value=" Chiffre d'Affaires : "></h:outputText>
+                        <h:outputText value=" Chiffre d'Affaires : #{statisticsController.chiffreDaffaires}"> </h:outputText>
                         <p:graphicImage value="resources/images/2x/accessibility.png" />
-                        <h:outputText value=" Nb clients : "></h:outputText>
+                        <h:outputText value=" Nombre de clients : #{statisticsController.nombreDeClients}">  </h:outputText>
                     </h:panelGrid>
                 </p:fieldset>
 
                 <p:fieldset legend="Ressources" toggleable="true" toggleSpeed="100">
                     <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
                     <h:panelGrid columns="2" cellpadding="5">
-                        <h:outputText value="Meilleur client (criètre : argent)"></h:outputText>
+                        <h:outputText value="Meilleur client (critère : argent)">  </h:outputText>
                         <p:graphicImage value="resources/images/2x/sentiment_satisfied.png" />
-                        <h:outputText value="Nom : "></h:outputText>
-                        <h:outputText value="Id : "></h:outputText>
-                        <h:outputText value="Argents : "></h:outputText>
-                        <h:outputText value="Nombre de commandes : "></h:outputText>
+                        <h:outputText value="Nom : #{statisticsController.meilleurClient_argent.nom_user}"></h:outputText>
+                        <h:outputText value="Prénom : #{statisticsController.meilleurClient_argent.prenom_user}"> </h:outputText>
+                        <h:outputText value="Argent : #{statisticsController.meilleurClient_argent.total_achat}"></h:outputText>
+                        <h:outputText value="Nombre de commandes : #{statisticsController.meilleurClient_argent.nb_commandes}"></h:outputText>
                     </h:panelGrid>
 
                     <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
                     <h:panelGrid columns="2" cellpadding="5">
                         <h:outputText value="Meilleur client (criètre : nombre de commandes)"></h:outputText>
                         <p:graphicImage value="resources/images/2x/sentiment_satisfied.png" />
-                        <h:outputText value="Nom : "></h:outputText>
-                        <h:outputText value="Id : "></h:outputText>
-                        <h:outputText value="Argents : "></h:outputText>
-                        <h:outputText value="Nombre de commandes : "></h:outputText>
+                        <h:outputText value="Nom : #{statisticsController.meilleurClient_commandes.nom_user}"></h:outputText>
+                        <h:outputText value="Prénom : #{statisticsController.meilleurClient_commandes.prenom_user}"> </h:outputText>
+                        <h:outputText value="Argent : #{statisticsController.meilleurClient_commandes.total_achat}"></h:outputText>
+                        <h:outputText value="Nombre de commandes : #{statisticsController.meilleurClient_commandes.nb_commandes}"></h:outputText>
                     </h:panelGrid>
 
                     <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
                     <h:panelGrid columns="2" cellpadding="5">
                         <h:outputText value="Pire livreur (criètre : nombre de retards)"></h:outputText>
                         <p:graphicImage value="resources/images/2x/mood_bad.png" />
-                        <h:outputText value="Nom : "></h:outputText>
-                        <h:outputText value="Id : "></h:outputText>
-                        <h:outputText value="Argents : "></h:outputText>
-                        <h:outputText value="Nombre de commandes : "></h:outputText>
+                        <h:outputText value="Nom : #{statisticsController.pireLivreur.nom_livreur}"></h:outputText>
+                        <h:outputText value="Prenom : #{statisticsController.pireLivreur.prenom_livreur}"></h:outputText>
+                        <h:outputText value="Temps de retard total (min) : #{statisticsController.pireLivreur.tempsTotalRetards}"></h:outputText>
+                        <h:outputText value="Nombre de retards : #{statisticsController.pireLivreur.totalRetards} "></h:outputText>
                     </h:panelGrid>
+                    
+                    <p:dataTable var="car" value="#{statisticsController.vehiculesMoinsUtilises}" style="margin-top: 1%;">
+                        <f:facet name="header" >
+                            <h:outputText value="Véhicules non utilisés (criètre : Aucune livraison )"></h:outputText>
+                        </f:facet>
+                        <p:column headerText="Id">
+                            <h:outputText value="#{car.id_vehi}" />
+                        </p:column>
 
-                    <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
-                    <h:panelGrid columns="2" cellpadding="5">
-                        <h:outputText value="Pire véhicule (criètre : nombre de retards)"></h:outputText>
-                        <p:graphicImage value="resources/images/2x/mood_bad.png" />
-                        <h:outputText value="Nom "></h:outputText>
-                        <h:outputText value="Marque : "></h:outputText>
-                        <h:outputText value="Nombres de retard : "></h:outputText>
-                    </h:panelGrid>
+                        <p:column headerText="Marque">
+                            <h:outputText value="#{car.nom_vehi}" />
+                        </p:column>
+
+                        <p:column headerText="Type">
+                            <h:outputText value="#{car.type_vehi}" />
+                        </p:column>
+
+                    </p:dataTable>
+
+
                 </p:fieldset>
+
 
                 <p:fieldset legend="Produits" toggleable="true" toggleSpeed="100">
                     <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
                     <h:panelGrid columns="2" cellpadding="5">
-                        <h:outputText value="Meilleur pizza : "> </h:outputText> 
-                        <!-- <p:graphicImage value="Todo Image Meilleur pizza" /> -->
-                        <h:outputText value="Nom de la pizza : "></h:outputText>
+                        <h:outputText value="Meilleure pizza : "> </h:outputText> 
+                        <p:graphicImage value="#{statisticsController.meilleurePizza.image}" /> 
+                        <h:outputText value="Nom de la pizza :#{statisticsController.meilleurePizza.nom_pizza} "></h:outputText>
                         <br/>
-                        <h:outputText value="Pizza la moins demandée : "> </h:outputText> 
-                        <!-- <p:graphicImage value="Todo Image Meilleur pizza" /> -->
-                        <h:outputText value="Nom de la pizza : "></h:outputText>                                        
+                        <h:outputText value="Pizza la moins demandée : ">  </h:outputText> 
+                        <p:graphicImage value="#{statisticsController.pirePizza.image}" />
+                        <h:outputText value="Nom de la pizza : #{statisticsController.pirePizza.nom_pizza}"></h:outputText>                                        
                     </h:panelGrid>
                 </p:fieldset>
 
@@ -130,9 +154,9 @@
                     <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" update="msgs" />
                     <h:panelGrid columns="2" cellpadding="5">
                         <p:graphicImage value="resources/images/2x/gift.png" />
-                        <h:outputText value ="Nombre de non-facturation (raison : fidélité) : "></h:outputText>
+                        <h:outputText value ="Nombre de non-facturation (raison : fidélité) : #{statisticsController.nbNonFacturation_fidelite}"> </h:outputText>
                         <p:graphicImage value="resources/images/2x/gift.png" />
-                        <h:outputText value ="Nombre de non-facturation (raison : retard de livraison (+30 min)) : "></h:outputText>
+                        <h:outputText value ="Nombre de non-facturation (raison : retard de livraison (+30 min)) : #{statisticsController.nbNonFacturation_retards}"></h:outputText>
                     </h:panelGrid>
                 </p:fieldset>
 
